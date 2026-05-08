@@ -1023,6 +1023,87 @@
       line-height: 1.75;
       color: #2a3520;
     }
+
+    /* ══ PDF 查看器 ══ */
+    .pdf-btn {
+      padding: 6px 14px;
+      background: linear-gradient(135deg, #5a6cf7, #3a4de8);
+      border: 1.5px solid #7a8cf9;
+      border-radius: 8px;
+      color: #fff;
+      font-size: .78rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity .15s;
+      letter-spacing: .02em;
+    }
+    .pdf-btn:hover { opacity: .86; }
+
+    .pdf-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10,20,40,.7);
+      backdrop-filter: blur(6px);
+      z-index: 400;
+      align-items: center;
+      justify-content: center;
+    }
+    .pdf-overlay.show { display: flex; }
+    .pdf-box {
+      background: #f4f8f0;
+      border-radius: 16px;
+      width: min(960px, 97vw);
+      height: min(90vh, 820px);
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 24px 80px rgba(0,0,0,.32);
+      overflow: hidden;
+      animation: popIn .22s ease;
+    }
+    .pdf-header {
+      background: #2e4a28;
+      color: #fff;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+    .pdf-header h2 { font-size: .97rem; font-weight: 700; margin: 0; }
+    .pdf-download-btn {
+      margin-left: auto;
+      padding: 5px 16px;
+      background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.4);
+      border-radius: 8px;
+      color: #fff;
+      font-size: .8rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      text-decoration: none;
+      transition: background .15s;
+    }
+    .pdf-download-btn:hover { background: rgba(255,255,255,.28); }
+    .pdf-close-btn {
+      padding: 5px 14px;
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.28);
+      border-radius: 8px;
+      color: rgba(255,255,255,.75);
+      cursor: pointer;
+      font-size: .8rem;
+      font-family: inherit;
+      transition: background .15s;
+    }
+    .pdf-close-btn:hover { background: rgba(255,255,255,.22); }
+    .pdf-frame {
+      flex: 1;
+      border: none;
+      background: #525659;
+    }
   </style>
 </head>
 <body>
@@ -1046,6 +1127,7 @@
         <button class="quality-btn active" onclick="setQuality('720p')">高清</button>
       </div>
       <button class="open-lab-btn" onclick="openLab()">💻 编程练习</button>
+      <button class="pdf-btn" onclick="openPdf()">📄 栈微课PDF</button>
     </div>
   </div>
 
@@ -2173,6 +2255,41 @@ bool validateStackSequences(vector<int> pushed, vector<int> popped) {
         this.selectionStart = this.selectionEnd = start + 2;
       }
     });
+
+    // ── PDF 查看器 ──
+    const PDF_URL = './栈微课PDF.pdf';
+
+    function openPdf() {
+      const overlay = document.getElementById('pdfOverlay');
+      const frame   = document.getElementById('pdfFrame');
+      const dl      = document.getElementById('pdfDownloadBtn');
+      frame.src = PDF_URL;
+      dl.href   = PDF_URL;
+      overlay.classList.add('show');
+    }
+
+    function closePdf() {
+      const overlay = document.getElementById('pdfOverlay');
+      const frame   = document.getElementById('pdfFrame');
+      overlay.classList.remove('show');
+      frame.src = '';
+    }
+
+    document.getElementById('pdfOverlay').addEventListener('click', function(e) {
+      if (e.target === this) closePdf();
+    });
   </script>
+
+  <!-- PDF 查看器弹窗 -->
+  <div class="pdf-overlay" id="pdfOverlay">
+    <div class="pdf-box">
+      <div class="pdf-header">
+        <h2>📄 栈微课PDF</h2>
+        <a class="pdf-download-btn" id="pdfDownloadBtn" href="" download="栈微课PDF.pdf">⬇ 下载PDF</a>
+        <button class="pdf-close-btn" onclick="closePdf()">✕ 关闭</button>
+      </div>
+      <iframe class="pdf-frame" id="pdfFrame" src=""></iframe>
+    </div>
+  </div>
 </body>
 </html>
